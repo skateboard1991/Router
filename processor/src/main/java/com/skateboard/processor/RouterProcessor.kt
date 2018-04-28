@@ -24,7 +24,7 @@ class RouterProcessor : AbstractProcessor()
 
     private var typeUtil: Types? = null
 
-    private var messager:Messager?=null
+    private var messager: Messager? = null
 
     override fun getSupportedAnnotationTypes(): Set<String>
     {
@@ -42,7 +42,7 @@ class RouterProcessor : AbstractProcessor()
         super.init(processingEnvironment)
         elementsUtil = processingEnvironment.elementUtils
         filer = processingEnvironment.filer
-        messager=processingEnvironment.messager
+        messager = processingEnvironment.messager
         typeUtil = processingEnvironment.typeUtils
     }
 
@@ -51,10 +51,10 @@ class RouterProcessor : AbstractProcessor()
 
         val elementSet = roundEnvironment.getElementsAnnotatedWith(Route::class.java)
         val typeSpecBuilder = TypeSpec.classBuilder("RouterTableImp")
-        typeSpecBuilder.addSuperinterface(ClassName.get("com.skateboard.router", "TypeSpec"))
+        typeSpecBuilder.addSuperinterface(ClassName.get("com.skateboard.router", "RouterTable"))
         typeSpecBuilder.addModifiers(Modifier.PUBLIC)
         val methodSpecBuilder = MethodSpec.methodBuilder("putRouteClass")
-        val parameterTypeName = ParameterizedTypeName.get(ClassName.get(Map::class.java), ClassName.get(String::class.java), ClassName.get(Class::class.java), WildcardTypeName.subtypeOf(Any::class.java))
+        val parameterTypeName = ParameterizedTypeName.get(ClassName.get("android.support.v4.util", "ArrayMap"), ClassName.get(String::class.java), ParameterizedTypeName.get(ClassName.get(Class::class.java), WildcardTypeName.subtypeOf(Any::class.java)))
         methodSpecBuilder.addParameter(ParameterSpec.builder(parameterTypeName, "routableMap").build())
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Void.TYPE)
@@ -66,12 +66,11 @@ class RouterProcessor : AbstractProcessor()
                 if (element.kind == ElementKind.CLASS)
                 {
                     val route = element.getAnnotation(Route::class.java)
-                    methodSpecBuilder.addStatement("routableMap.put(\$S, \$T.class)", route, element.qualifiedName)
+                    methodSpecBuilder.addStatement("routableMap.put(\$S, \$T.class)", route.url, ClassName.get(element))
                 }
             }
         }
         typeSpecBuilder.addMethod(methodSpecBuilder.build())
-        messager?.printMessage(Diagnostic.Kind.ERROR,"error after")
         val javaFile = JavaFile.builder("com.skateboard.router", typeSpecBuilder.build()).build()
         filer?.let {
             javaFile.writeTo(it)
