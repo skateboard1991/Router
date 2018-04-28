@@ -13,7 +13,7 @@ import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec
 import com.squareup.javapoet.JavaFile
-
+import javax.lang.model.SourceVersion
 
 
 class RouterProcessor : AbstractProcessor()
@@ -31,6 +31,11 @@ class RouterProcessor : AbstractProcessor()
         return setOf(Route::class.java.canonicalName)
     }
 
+    override fun getSupportedSourceVersion(): SourceVersion
+    {
+        return SourceVersion.latestSupported()
+    }
+
     @Synchronized
     override fun init(processingEnvironment: ProcessingEnvironment)
     {
@@ -44,51 +49,33 @@ class RouterProcessor : AbstractProcessor()
     override fun process(set: Set<TypeElement>, roundEnvironment: RoundEnvironment): Boolean
     {
 
-//        val elementSet = roundEnvironment.getElementsAnnotatedWith(Route::class.java)
-//        messager?.printMessage(Diagnostic.Kind.ERROR,"elementSet is ${elementSet.size}")
-//        val typeSpecBuilder = TypeSpec.classBuilder("RouterTableImp")
-//        typeSpecBuilder.addSuperinterface(ClassName.get("com.skateboard.router", "TypeSpec"))
-//        typeSpecBuilder.addModifiers(Modifier.PUBLIC)
-//        val methodSpecBuilder = MethodSpec.methodBuilder("putRouteClass")
-//        val parameterTypeName = ParameterizedTypeName.get(ClassName.get(Map::class.java), ClassName.get(String::class.java), ClassName.get(Class::class.java), WildcardTypeName.subtypeOf(Any::class.java))
-//        methodSpecBuilder.addParameter(ParameterSpec.builder(parameterTypeName, "routableMap").build())
-//                .addModifiers(Modifier.PUBLIC)
-//                .returns(Void.TYPE)
-//
-//        for (element in elementSet)
-//        {
-//            if (element is TypeElement)
-//            {
-//                if (element.kind == ElementKind.CLASS)
-//                {
-//                    val route = element.getAnnotation(Route::class.java)
-//                    methodSpecBuilder.addStatement("routableMap.put(\$S, \$T.class)", route, element.qualifiedName)
-//                }
-//            }
-//        }
-//        typeSpecBuilder.addMethod(methodSpecBuilder.build())
-//        val javaFile = JavaFile.builder("com.skateboard.router", typeSpecBuilder.build()).build()
-//        filer?.let {
-//            javaFile.writeTo(it)
-//        }
+        val elementSet = roundEnvironment.getElementsAnnotatedWith(Route::class.java)
+        val typeSpecBuilder = TypeSpec.classBuilder("RouterTableImp")
+        typeSpecBuilder.addSuperinterface(ClassName.get("com.skateboard.router", "TypeSpec"))
+        typeSpecBuilder.addModifiers(Modifier.PUBLIC)
+        val methodSpecBuilder = MethodSpec.methodBuilder("putRouteClass")
+        val parameterTypeName = ParameterizedTypeName.get(ClassName.get(Map::class.java), ClassName.get(String::class.java), ClassName.get(Class::class.java), WildcardTypeName.subtypeOf(Any::class.java))
+        methodSpecBuilder.addParameter(ParameterSpec.builder(parameterTypeName, "routableMap").build())
+                .addModifiers(Modifier.PUBLIC)
+                .returns(Void.TYPE)
 
-        messager?.printMessage(Diagnostic.Kind.ERROR,"elementSet is ${set.size}")
-        val javaFile = JavaFile.builder("com.walfud.howtojavapoet",
-                // TypeSpec 代表一个类
-                TypeSpec.classBuilder("Clazz")
-                        // 给类添加一个属性
-                        .addField(FieldSpec.builder(Int::class.javaPrimitiveType!!, "mField", Modifier.PRIVATE)
-                                .build())
-                        // 给类添加一个方法
-                        .addMethod(MethodSpec.methodBuilder("method")
-                                .addModifiers(Modifier.PUBLIC)
-                                .returns(Void.TYPE)
-                                .addStatement("System.out.println(str)")
-                                .build())
-                        .build())
-                .build()
-
-        javaFile.writeTo(filer)
+        for (element in elementSet)
+        {
+            if (element is TypeElement)
+            {
+                if (element.kind == ElementKind.CLASS)
+                {
+                    val route = element.getAnnotation(Route::class.java)
+                    methodSpecBuilder.addStatement("routableMap.put(\$S, \$T.class)", route, element.qualifiedName)
+                }
+            }
+        }
+        typeSpecBuilder.addMethod(methodSpecBuilder.build())
+        messager?.printMessage(Diagnostic.Kind.ERROR,"error after")
+        val javaFile = JavaFile.builder("com.skateboard.router", typeSpecBuilder.build()).build()
+        filer?.let {
+            javaFile.writeTo(it)
+        }
 
         return true
     }
