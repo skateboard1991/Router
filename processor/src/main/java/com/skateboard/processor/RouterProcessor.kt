@@ -49,7 +49,6 @@ class RouterProcessor : AbstractProcessor()
         messager = processingEnvironment.messager
         typeUtil = processingEnvironment.typeUtils
         moduleName = processingEnvironment.options[Constants.KEY_MODULENAME] ?: ""
-//        messager?.printMessage(Diagnostic.Kind.ERROR,moduleName)
     }
 
     override fun process(set: Set<TypeElement>, roundEnvironment: RoundEnvironment): Boolean

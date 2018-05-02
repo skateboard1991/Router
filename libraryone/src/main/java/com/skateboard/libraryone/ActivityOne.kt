@@ -14,12 +14,12 @@ class ActivityOne : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_one)
-        startBtn.setOnClickListener {
-            setResult(Activity.RESULT_OK)
-            finish()
-//            Router.go(this@ActivityOne,"librarytwo")
-
-        }
+//        startBtn.setOnClickListener {
+//
+//
+//        }
+        val fragment=Router.getFragment("librarytwofragment")
+        supportFragmentManager.beginTransaction().replace(R.id.container,fragment).commit()
     }
 
 
