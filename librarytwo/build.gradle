@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 27
 
@@ -16,7 +18,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        kapt {
+            arguments {
+                arg("moduleName", project.name)
+            }
+        }
     }
 
     buildTypes {
@@ -29,6 +35,7 @@ android {
 }
 
 dependencies {
+    kapt project(':processor')
     api project(':router')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"

@@ -5,4 +5,4 @@ import java.lang.annotation.RetentionPolicy
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FILE)
-annotation class Route(val moduleName:String,val url:String)
+annotation class Route(val url:String)
