@@ -14,7 +14,8 @@
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         kapt {
             arguments {
-                arg("moduleName", project.name)
+                //module name，会传入注解解释器
+                arg("moduleName", project.name)
             }
         }
          kapt project(':processor')
