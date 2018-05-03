@@ -2,9 +2,8 @@
 使用方法:
 导入module ':router', ':processor', ':routerannoation'
 在需要使用的项目gradle文件里，添加
+    
     apply plugin: 'kotlin-kapt'
-    
-    
      defaultConfig {
         minSdkVersion 15
         targetSdkVersion 27
@@ -15,12 +14,15 @@
         kapt {
             arguments {
                 //module name，会传入注解解释器
-                    arg("moduleName", project.name)
+                 arg("moduleName", project.name)
             }
         }
-         kapt project(':processor')
-         api project(':router')
-        
+
+ 在dependencies里添加  
+ 
+     kapt project(':processor')
+     api project(':router')
+        
       
 在application里
 
